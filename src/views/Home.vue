@@ -1,30 +1,47 @@
 <template>
   <div class="home p-grid">
+    <div class="p-col-6 p-offset-3">
+      <h1>Decks</h1>
+    </div>
+    <div class="p-col-6 p-offset-3 p-grid">
+      <Card
+        v-for="(deck, i) in decks"
+        :key="i"
+        class="p-col-4"
+      >
+        <template v-slot:header>
+          <router-link :to="`/decks/${i}`"><h2>{{ deck.title }}</h2></router-link>
+        </template>
+        <template v-slot:content>
+          <p>{{ deck.description }}</p>
+        </template>
+      </Card>
+    </div>
     <Card class="p-col-6 p-offset-3">
       <template v-slot:header>
-        <h2>Create Card</h2>
+        <h2>Create Deck</h2>
       </template>
       <template v-slot:content>
-        <form @submit.prevent="submitNewCardForm" class="p-fluid">
+        <form @submit.prevent="submitNewDeckForm" class="p-fluid">
           <div class="p-field">
-            <label for="question">Question</label>
+            <label for="title">Title</label>
             <InputText
-              v-model="question"
-              id="question"
+              v-model="title"
+              id="title"
               class="p-field"
             />
           </div>
 
           <div class="p-field">
-            <label for="answer">Answer</label>
+            <label for="description">Description</label>
             <InputText
-              v-model="answer"
-              id="answer"
+              v-model="description"
+              id="description"
               class="p-field"
             />
           </div>
 
-          <Button type="submit" label="Add New Card" />
+          <Button type="submit" label="Add New Deck" />
         </form>
       </template>
     </Card>
@@ -46,24 +63,24 @@ export default {
   },
   data () {
     return {
-      question: '',
-      answer: ''
+      title: '',
+      description: ''
     }
   },
   computed: {
-    ...mapState(['cards'])
+    ...mapState(['decks'])
   },
   methods: {
-    ...mapActions(['createCard']),
-    submitNewCardForm () {
+    ...mapActions(['createDeck']),
+    submitNewDeckForm () {
       const payload = {
-        question: this.question,
-        answer: this.answer
+        title: this.title,
+        description: this.description
       }
-      this.createCard(payload)
+      this.createDeck(payload)
 
-      this.question = ''
-      this.answer = ''
+      this.title = ''
+      this.description = ''
     }
   }
 }
