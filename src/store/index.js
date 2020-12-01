@@ -1,6 +1,8 @@
 import { createStore } from 'vuex'
 import VuexPersistence from 'vuex-persist'
-import { DateTime } from 'luxon'
+
+import actions from './actions'
+import mutations from './mutations'
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage
@@ -31,7 +33,10 @@ const vuexLocal = new VuexPersistence({
 
 export default createStore({
   state: {
-    cards: [],
+    currentDeck: {
+      deck: {},
+      cards: []
+    },
     decks: [],
     bucketDays: [1, 3, 7, 16, 30]
   },
@@ -47,56 +52,8 @@ export default createStore({
       })
     }
   },
-  mutations: {
-    appendDeck (state, deck) {
-      state.decks.push(deck)
-    },
-    appendCard (state, card) {
-      state.cards.push(card)
-    },
-    mutateCard (state, card) {
-      const { cardIndex, cardDetails } = card
-      state.cards[cardIndex] = {
-        ...state.cards[cardIndex],
-        ...cardDetails
-      }
-    }
-  },
-  actions: {
-    createDeck ({ commit }, { title, description }) {
-      const now = DateTime.local().toISO()
-      const deck = {
-        title,
-        description,
-        bucket: 1,
-        lastReviewed: 0,
-        createdAt: now,
-        updatedAt: now
-      }
-      commit('appendDeck', deck)
-    },
-    createCard ({ commit }, { question, answer, deckId }) {
-      const now = DateTime.local().toISO()
-      const card = {
-        deckId,
-        question,
-        answer,
-        bucket: 1,
-        nextReviewDate: now,
-        lastReviewed: 0,
-        createdAt: now,
-        updatedAt: now
-      }
-      commit('appendCard', card)
-    },
-    updateCard ({ commit }, payload) {
-      // payload = {cardId, cardDetails: {}}
-      commit('mutateCard', payload)
-    },
-    deleteCard () {
-
-    }
-  },
+  mutations,
+  actions,
   modules: {
   },
   plugins: [vuexLocal.plugin]

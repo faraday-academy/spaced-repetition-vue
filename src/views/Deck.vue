@@ -2,6 +2,11 @@
   <div class="home p-grid">
     <div class="p-col-6 p-offset-3">
       <h1>{{ deck.title }} Deck</h1>
+      <Button
+        @click="$router.push(`/decks/${this.$route.params.id}/study`)"
+        type="button"
+        label="Study Deck"
+      />
       <Card class="">
         <template v-slot:header>
           <h2>Create Card</h2>
@@ -31,7 +36,7 @@
         </template>
       </Card>
 
-      <Card v-for="(card, i) in cards" :key="i">
+      <Card v-for="(card, i) in currentDeck.cards" :key="i">
         <template v-slot:header>
           <h2>{{ card.question }}</h2>
         </template>
@@ -44,7 +49,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
@@ -60,15 +65,15 @@ export default {
     return {
       question: '',
       answer: '',
-      deck: {},
-      cards: []
+      deck: {}
     }
   },
   computed: {
-    ...mapGetters(['getDeck', 'getCardsForDeck'])
+    ...mapGetters(['getDeck']),
+    ...mapState(['currentDeck'])
   },
   methods: {
-    ...mapActions(['createCard']),
+    ...mapActions(['getDeckCards', 'createCard']),
     submitNewCardForm () {
       const payload = {
         deckId: parseInt(this.$route.params.id),
@@ -83,7 +88,7 @@ export default {
   },
   mounted () {
     const id = parseInt(this.$route.params.id)
-    this.cards = this.getCardsForDeck(id)
+    this.getDeckCards(id)
     this.deck = this.getDeck(id)
   }
 }

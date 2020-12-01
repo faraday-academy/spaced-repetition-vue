@@ -71,7 +71,7 @@ export default {
     ...mapState(['decks'])
   },
   methods: {
-    ...mapActions(['createDeck']),
+    ...mapActions(['getDecks', 'createDeck']),
     submitNewDeckForm () {
       const payload = {
         title: this.title,
@@ -82,6 +82,9 @@ export default {
       this.title = ''
       this.description = ''
     }
+  },
+  mounted () {
+    this.getDecks()
   }
 }
 </script>
